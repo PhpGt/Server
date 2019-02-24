@@ -1,0 +1,34 @@
+<?php
+
+use Gt\Cli\Application;
+use Gt\Cli\Argument\ArgumentList;
+use Gt\Server\Cli\StartCommand;
+
+$autoloadLocations = [
+	implode(DIRECTORY_SEPARATOR, [
+		__DIR__,
+		"..",
+		"..",
+		"..",
+		"autoload.php",
+	]),
+	implode(DIRECTORY_SEPARATOR, [
+		__DIR__,
+		"..",
+		"vendor",
+		"autoload.php",
+	]),
+];
+foreach($autoloadLocations as $location) {
+	if(file_exists($location)) {
+		require($location);
+		break;
+	}
+}
+
+$app = new Application(
+	"PHP.Gt development webserver",
+	new ArgumentList(...$argv),
+	new StartCommand()
+);
+$app->run();
