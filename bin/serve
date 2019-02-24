@@ -1,23 +1,11 @@
 <?php
-
 use Gt\Cli\Application;
 use Gt\Cli\Argument\ArgumentList;
-use Gt\Server\Cli\StartCommand;
+use Gt\Server\Command\StartCommand;
 
 $autoloadLocations = [
-	implode(DIRECTORY_SEPARATOR, [
-		__DIR__,
-		"..",
-		"..",
-		"..",
-		"autoload.php",
-	]),
-	implode(DIRECTORY_SEPARATOR, [
-		__DIR__,
-		"..",
-		"vendor",
-		"autoload.php",
-	]),
+	__DIR__ . "/../../../autoload.php",
+	__DIR__ . "/../vendor/autoload.php",
 ];
 foreach($autoloadLocations as $location) {
 	if(file_exists($location)) {
@@ -27,8 +15,9 @@ foreach($autoloadLocations as $location) {
 }
 
 $app = new Application(
-	"PHP.Gt development webserver",
+	"PHP.Gt development web server",
 	new ArgumentList(...$argv),
 	new StartCommand()
 );
+$app->setDefaultCommand("start");
 $app->run();
