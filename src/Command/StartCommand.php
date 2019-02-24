@@ -5,7 +5,8 @@ use Gt\Cli\Argument\ArgumentValueList;
 use Gt\Cli\Command\Command;
 use Gt\Cli\Parameter\NamedParameter;
 use Gt\Cli\Parameter\Parameter;
-use Prophecy\Argument;
+use Gt\Cli\Process\Process;
+use Gt\Cli\Stream;
 
 class StartCommand extends Command {
 	public function getName():string {
@@ -48,5 +49,47 @@ class StartCommand extends Command {
 	}
 
 	public function run(ArgumentValueList $arguments = null):void {
+		$goPath = implode(DIRECTORY_SEPARATOR, [
+			"vendor",
+			"phpgt",
+			"webengine",
+			"go.php",
+		]);
+		if(!file_exists($goPath)) {
+			$this->writeLine(
+				"Error: Current directory is not a WebEngine project",
+				Stream::ERROR
+			);
+			return;
+		}
+
+		$bind = $arguments->get("bind", "0.0.0.0");
+		$port = $arguments->get("port", 8080);
+
+		$docRoot = "www";
+		if(!is_dir($docRoot)) {
+			mkdir($docRoot);
+		}
+
+		$cmd = "php -S $bind:$port -t $docRoot $goPath";
+		$this->writeLine("Executing: $cmd");
+		$process = new Process($cmd);
+		$process->exec();
+
+		while($process->isAlive()) {
+			usleep(250000); // 1/4 second
+			usleep(250000); // 1/4 second
+			usleep(250000); // 1/4 second
+			usleep(250000); // 1/4 second
+			$this->write(
+				$process->read(Stream::OUT)
+			);
+			$this->write(
+				$process->read(Stream::ERROR),
+				Stream::ERROR
+			);
+		}
+
+		$this->writeLine("Server process ended.");
 	}
 }
