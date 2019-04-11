@@ -1,3 +1,4 @@
+#!/usr/bin/env php
 <?php
 use Gt\Cli\Application;
 use Gt\Cli\Argument\ArgumentList;
