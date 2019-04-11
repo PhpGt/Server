@@ -1,7 +1,7 @@
 #!/usr/bin/env php
 <?php
 use Gt\Cli\Application;
-use Gt\Cli\Argument\ArgumentList;
+use Gt\Cli\Argument\CommandArgumentList;
 use Gt\Server\Command\StartCommand;
 
 $autoloadLocations = [
@@ -17,8 +17,7 @@ foreach($autoloadLocations as $location) {
 
 $app = new Application(
 	"PHP.Gt development web server",
-	new ArgumentList(...$argv),
+	new CommandArgumentList("start", ...$argv),
 	new StartCommand()
 );
-$app->setDefaultCommand("start");
 $app->run();
