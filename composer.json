@@ -1,12 +1,4 @@
 {
-	"repositories": [
-		{
-			"type": "path",
-			"url": "/home/g105b/Code/PhpGt/*"
-		}
-	],
-	"minimum-stability": "dev",
-
 	"name": "phpgt/server",
 	"description": "Development HTTP server.",
 
@@ -15,7 +7,7 @@
 	],
 
 	"require": {
-		"phpgt/cli": "dev-master"
+		"phpgt/cli": "*"
 	},
 	"require-dev": {
 		"phpunit/phpunit": "8.*"
