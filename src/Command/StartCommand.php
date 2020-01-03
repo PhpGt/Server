@@ -32,8 +32,8 @@ class StartCommand extends Command {
 			mkdir($docRoot);
 		}
 
-		$cmd = "php -S $bind:$port -t $docRoot $goPath";
-		$this->writeLine("Executing: $cmd");
+		$cmd = ["php", "-S", "$bind:$port", "-t", $docRoot, $goPath];
+		$this->writeLine("Executing: " . implode(" ", $cmd));
 		$process = new Process($cmd);
 		$process->exec();
 
