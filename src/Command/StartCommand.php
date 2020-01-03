@@ -34,7 +34,7 @@ class StartCommand extends Command {
 
 		$cmd = ["php", "-S", "$bind:$port", "-t", $docRoot, $goPath];
 		$this->writeLine("Executing: " . implode(" ", $cmd));
-		$process = new Process($cmd);
+		$process = new Process(...$cmd);
 		$process->exec();
 
 		do {
