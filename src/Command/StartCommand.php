@@ -32,7 +32,13 @@ class StartCommand extends Command {
 			mkdir($docRoot);
 		}
 
-		$cmd = ["php", "-S", "$bind:$port", "-t", $docRoot, $goPath];
+		$cmd = ["php"];
+
+		if($arguments->contains("debug")) {
+			array_push($cmd, "-dzend_extension=xdebug.so");
+		}
+
+		array_push($cmd, ...["-S", "$bind:$port", "-t", $docRoot, $goPath]);
 		$this->writeLine("Executing: " . implode(" ", $cmd));
 		$process = new Process(...$cmd);
 		$process->exec();
@@ -71,7 +77,9 @@ class StartCommand extends Command {
 
 	/** @return  NamedParameter[] */
 	public function getOptionalNamedParameterList():array {
-		return [];
+		return [
+			new NamedParameter("debug"),
+		];
 	}
 
 	/** @return  Parameter[] */
