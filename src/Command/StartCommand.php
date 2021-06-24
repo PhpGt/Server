@@ -9,6 +9,9 @@ use Gt\Cli\Stream;
 use Gt\Daemon\Process;
 
 class StartCommand extends Command {
+	const DEFAULT_BIND_HOST = "0.0.0.0";
+	const DEFAULT_PORT = 8080;
+
 	public function run(ArgumentValueList $arguments = null):void {
 		$goPath = implode(DIRECTORY_SEPARATOR, [
 			"vendor",
@@ -24,8 +27,8 @@ class StartCommand extends Command {
 			return;
 		}
 
-		$bind = $arguments->get("bind", "0.0.0.0");
-		$port = $arguments->get("port", 8080);
+		$bind = $arguments->get("bind", self::DEFAULT_BIND_HOST);
+		$port = $arguments->get("port", self::DEFAULT_PORT);
 
 		$docRoot = "www";
 		if(!is_dir($docRoot)) {
@@ -46,6 +49,10 @@ class StartCommand extends Command {
 		do {
 			$output = $process->getOutput();
 			$error = $process->getErrorOutput();
+
+			if(preg_match("/127\.0\.0\.1:\d+ (Accepted|Closing)/", $error)) {
+				$error = "";
+			}
 
 			if(!empty($output)) {
 				$this->write($output);
