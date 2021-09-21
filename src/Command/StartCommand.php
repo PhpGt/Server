@@ -10,7 +10,7 @@ use Gt\Daemon\Process;
 
 class StartCommand extends Command {
 	const DEFAULT_BIND_HOST = "0.0.0.0";
-	const DEFAULT_PORT = "8080";
+	const DEFAULT_PORT = 8080;
 
 	public function run(ArgumentValueList $arguments = null):void {
 		$goPath = implode(DIRECTORY_SEPARATOR, [
@@ -28,7 +28,7 @@ class StartCommand extends Command {
 		}
 
 		$bind = $arguments->get("bind", self::DEFAULT_BIND_HOST);
-		$port = $arguments->get("port", self::DEFAULT_PORT);
+		$port = $arguments->get("port", (string)self::DEFAULT_PORT);
 
 		$docRoot = "www";
 		if(!is_dir($docRoot)) {
