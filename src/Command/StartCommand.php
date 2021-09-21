@@ -28,7 +28,7 @@ class StartCommand extends Command {
 		}
 
 		$bind = $arguments->get("bind", self::DEFAULT_BIND_HOST);
-		$port = $arguments->get("port", self::DEFAULT_PORT);
+		$port = $arguments->get("port", (string)self::DEFAULT_PORT);
 
 		$docRoot = "www";
 		if(!is_dir($docRoot)) {
