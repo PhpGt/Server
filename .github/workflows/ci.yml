@@ -40,6 +40,6 @@ jobs:
         run: tar -xvf /tmp/github-actions/build.tar ./
 
       - name: PHP Static Analysis
-        uses: php-actions/phpstan@v2
+        uses: php-actions/phpstan@v3
         with:
           path: src/
