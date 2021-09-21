@@ -10,7 +10,7 @@ use Gt\Daemon\Process;
 
 class StartCommand extends Command {
 	const DEFAULT_BIND_HOST = "0.0.0.0";
-	const DEFAULT_PORT = 8080;
+	const DEFAULT_PORT = "8080";
 
 	public function run(ArgumentValueList $arguments = null):void {
 		$goPath = implode(DIRECTORY_SEPARATOR, [
