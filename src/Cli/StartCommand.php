@@ -84,9 +84,7 @@ class StartCommand extends Command {
 
 	/** @return  NamedParameter[] */
 	public function getOptionalNamedParameterList():array {
-		return [
-			new NamedParameter("debug"),
-		];
+		return [];
 	}
 
 	/** @return  Parameter[] */
@@ -107,6 +105,11 @@ class StartCommand extends Command {
 				"bind",
 				"b"
 			),
+			new Parameter(
+				false,
+				"debug",
+				"d"
+			)
 		];
 	}
 }
