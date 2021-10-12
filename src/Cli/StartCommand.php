@@ -50,7 +50,7 @@ class StartCommand extends Command {
 			$output = $process->getOutput();
 			$error = $process->getErrorOutput();
 
-			if(preg_match("/127\.0\.0\.1:\d+ (Accepted|Closing)/", $error)) {
+			if(preg_match("/(127\.0\.0\.1|localhost|\[[\d:]+\]):\d+ (Accepted|Closing)/", $error)) {
 				$error = "";
 			}
 
