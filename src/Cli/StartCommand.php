@@ -39,6 +39,7 @@ class StartCommand extends Command {
 
 		if($arguments->contains("debug")) {
 			array_push($cmd, "-dzend_extension=xdebug.so");
+			array_push($cmd, "-dxdebug.mode=debug,profile");
 		}
 
 		array_push($cmd, ...["-S", "$bind:$port", "-t", $docRoot, $goPath]);
