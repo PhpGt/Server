@@ -11,8 +11,12 @@ use Gt\Daemon\Process;
 class StartCommand extends Command {
 	const DEFAULT_BIND_HOST = "0.0.0.0";
 	const DEFAULT_PORT = 8080;
+	const IGNORE_REGEX = "/(127\.0\.0\.1|localhost|\[[\d:]+\])"
+		.":\d+ (Accepted|Closing)/";
+	const DEFAULT_THREADS = 4;
 
-	public function run(ArgumentValueList $arguments = null):void {
+	// phpcs:disable Generic.Metrics.CyclomaticComplexity
+	public function run(?ArgumentValueList $arguments = null):void {
 		$goPath = implode(DIRECTORY_SEPARATOR, [
 			"vendor",
 			"phpgt",
@@ -27,31 +31,35 @@ class StartCommand extends Command {
 			return;
 		}
 
-		$bind = $arguments->get("bind", self::DEFAULT_BIND_HOST);
-		$port = $arguments->get("port", (string)self::DEFAULT_PORT);
+		$defaultThreads = self::DEFAULT_THREADS;
+		$bind = $arguments?->get("bind") ?? self::DEFAULT_BIND_HOST;
+		$port = $arguments?->get("port") ?? (string)self::DEFAULT_PORT;
+		$threads = $arguments?->get("threads") ?? $defaultThreads;
+		$debug = $arguments?->contains("debug") ?? false;
 
 		$docRoot = "www";
 		if(!is_dir($docRoot)) {
 			mkdir($docRoot);
 		}
 
-		$cmd = ["php"];
-
-		if($arguments->contains("debug")) {
-			array_push($cmd, "-dzend_extension=xdebug.so");
-			array_push($cmd, "-dxdebug.mode=debug,profile");
-		}
-
-		array_push($cmd, ...["-S", "$bind:$port", "-t", $docRoot, $goPath]);
+		$cmd = $this->buildCommand(
+			(string)$bind,
+			(string)$port,
+			$docRoot,
+			$goPath,
+			$debug,
+		);
 		$this->writeLine("Executing: " . implode(" ", $cmd));
+
 		$process = new Process(...$cmd);
+		$process->setEnv("PHP_CLI_SERVER_WORKERS", (string)$threads);
 		$process->exec();
 
 		do {
 			$output = $process->getOutput();
 			$error = $process->getErrorOutput();
 
-			if(preg_match("/(127\.0\.0\.1|localhost|\[[\d:]+\]):\d+ (Accepted|Closing)/", $error)) {
+			if(preg_match(self::IGNORE_REGEX, $error)) {
 				$error = "";
 			}
 
@@ -99,18 +107,42 @@ class StartCommand extends Command {
 			new Parameter(
 				true,
 				"port",
-				"p"
+				"p",
 			),
 			new Parameter(
 				true,
 				"bind",
-				"b"
+				"b",
+			),
+			new Parameter(
+				true,
+				"threads",
+				"t",
 			),
 			new Parameter(
 				false,
 				"debug",
-				"d"
-			)
+				"d",
+			),
 		];
+	}
+
+	/** @return array<string> */
+	private function buildCommand(
+		string $bind,
+		string $port,
+		string $docRoot,
+		string $goPath,
+		bool $debug,
+	):array {
+		$cmd = ["php"];
+
+		if($$debug) {
+			array_push($cmd, "-dzend_extension=xdebug.so");
+			array_push($cmd, "-dxdebug.mode=debug,profile");
+		}
+
+		array_push($cmd, "-S", "$bind:$port", "-t", $docRoot, $goPath);
+		return $cmd;
 	}
 }
