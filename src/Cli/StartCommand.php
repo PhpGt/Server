@@ -13,7 +13,7 @@ class StartCommand extends Command {
 	const DEFAULT_PORT = 8080;
 	const IGNORE_REGEX = "/(127\.0\.0\.1|localhost|\[[\d:]+\])"
 		.":\d+ (Accepted|Closing)/";
-	const DEFAULT_THREADS = 4;
+	const DEFAULT_THREADS = 8;
 
 	// phpcs:disable Generic.Metrics.CyclomaticComplexity
 	public function run(?ArgumentValueList $arguments = null):void {
