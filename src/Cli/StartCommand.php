@@ -137,7 +137,7 @@ class StartCommand extends Command {
 	):array {
 		$cmd = ["php"];
 
-		if($$debug) {
+		if($debug) {
 			array_push($cmd, "-dzend_extension=xdebug.so");
 			array_push($cmd, "-dxdebug.mode=debug,profile");
 		}
